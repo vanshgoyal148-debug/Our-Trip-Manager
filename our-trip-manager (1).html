@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OUR TRIP MANAGER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow-x:hidden;font-family:'Montserrat',sans-serif;}
+#splash{position:fixed;inset:0;z-index:9999;background:#04080f;overflow:hidden;cursor:pointer;}
+#starfield{position:absolute;inset:0;}
+.s{position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.1}}
+#aurora{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 20%, rgba(15,40,80,0.9) 0%, transparent 70%),radial-gradient(ellipse 60% 40% at 80% 10%, rgba(5,25,55,0.95) 0%, transparent 60%),radial-gradient(ellipse 100% 60% at 50% 80%, rgba(8,30,60,0.8) 0%, transparent 80%);animation:auroraPulse 12s ease-in-out infinite alternate;}
+@keyframes auroraPulse{0%{opacity:1}50%{opacity:0.7}100%{opacity:1}}
+#horizon{position:absolute;bottom:38%;left:0;right:0;height:120px;background:linear-gradient(180deg, transparent 0%, rgba(180,120,40,0.08) 40%, rgba(220,160,60,0.15) 70%, rgba(240,190,80,0.1) 100%);animation:horizonGlow 8s ease-in-out infinite alternate;}
+@keyframes horizonGlow{0%{opacity:0.5}100%{opacity:1}}
+#moon{position:absolute;right:12%;top:8%;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 38% 38%, #fffbe8, #e8d870 50%, #c8b840);box-shadow:0 0 40px 10px rgba(232,216,112,0.25), 0 0 80px 30px rgba(232,216,112,0.1);}
+#moon::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 65% 30%, transparent 40%, rgba(0,0,0,0.3) 100%);}
+#wonders-wrap{position:absolute;bottom:0;left:0;right:0;height:42%;overflow:hidden;}
+#wonders-track{display:flex;align-items:flex-end;height:100%;animation:wondersScroll 60s linear infinite;width:max-content;}
+@keyframes wondersScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.wonder-scene{display:inline-flex;align-items:flex-end;padding:0 40px;position:relative;}
+.wonder-label{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,215,100,0.7);white-space:nowrap;font-weight:500;}
+#ground{position:absolute;bottom:0;left:0;right:0;height:18px;background:linear-gradient(180deg,#0a1a0a,#050e05);z-index:2;}
+#fog{position:absolute;bottom:16%;left:0;right:0;height:80px;background:linear-gradient(180deg,transparent 0%,rgba(4,8,15,0.7) 100%);z-index:3;pointer-events:none;}
+#airplane{position:absolute;z-index:20;animation:planeCinematic 22s ease-in-out infinite;}
+@keyframes planeCinematic{0%{left:-220px;top:28%;transform:scaleX(1) rotate(1deg);}10%{top:22%;transform:scaleX(1) rotate(-1deg);}45%{top:20%;transform:scaleX(1) rotate(0.5deg);}80%{top:24%;transform:scaleX(1) rotate(-0.5deg);}98%{left:110vw;top:22%;transform:scaleX(1) rotate(1deg);}99%{left:-220px;top:28%;transform:scaleX(1);}100%{left:-220px;top:28%;transform:scaleX(1);}}
+#contrail{position:absolute;z-index:19;top:0;left:0;right:0;bottom:0;pointer-events:none;overflow:hidden;}
+.contrail-line{position:absolute;height:1.5px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),rgba(255,255,255,0.2),transparent);border-radius:2px;animation:contrailFade 22s ease-in-out infinite;}
+.cl-1{top:23%;width:180px;animation-delay:1.5s;}
+.cl-2{top:24%;width:120px;animation-delay:2s;opacity:0.5;}
+@keyframes contrailFade{0%,8%{opacity:0;transform:translateX(-300px)}15%{opacity:1;transform:translateX(20vw)}90%{opacity:0.3;transform:translateX(120vw)}100%{opacity:0;transform:translateX(120vw)}}
+.shoot{position:absolute;height:1px;background:linear-gradient(90deg,transparent,white,transparent);border-radius:2px;animation:shoot 6s ease-in infinite;opacity:0;}
+.sh1{width:120px;top:12%;left:20%;animation-delay:2s;}
+.sh2{width:80px;top:8%;left:60%;animation-delay:7s;}
+.sh3{width:100px;top:18%;left:40%;animation-delay:12s;}
+@keyframes shoot{0%{opacity:0;transform:translateX(-20px) translateY(-20px)}10%{opacity:1}30%{opacity:0;transform:translateX(100px) translateY(100px)}100%{opacity:0}}
+#title-overlay{position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6vh;pointer-events:none;}
+.t-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.5em;text-transform:uppercase;color:rgba(255,215,100,0.7);margin-bottom:14px;animation:fadeDown 1.2s ease 0.3s both;}
+.t-main{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,12vw,110px);font-weight:300;line-height:0.95;color:#fff;text-align:center;text-shadow:0 4px 60px rgba(0,0,0,0.8);animation:fadeDown 1.2s ease 0.6s both;letter-spacing:-0.01em;}
+.t-main em{font-style:italic;background:linear-gradient(135deg,#f5c518,#e8a020,#f5c518);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.t-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:400;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:18px;animation:fadeDown 1.2s ease 0.9s both;}
+.t-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,215,100,0.6),transparent);margin:14px auto 0;animation:fadeDown 1.2s ease 1.1s both;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+#enter-btn{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:25;background:transparent;color:rgba(255,255,255,0.9);border:1px solid rgba(255,215,100,0.5);border-radius:2px;padding:13px 44px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.4em;text-transform:uppercase;cursor:pointer;transition:all 0.4s;animation:fadeDown 1s ease 1.4s both, borderPulse 3s ease-in-out 2.4s infinite;}
+#enter-btn:hover{background:rgba(245,197,24,0.1);border-color:rgba(255,215,100,0.9);color:#fff;box-shadow:0 0 30px rgba(245,197,24,0.2);}
+@keyframes borderPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,197,24,0.15)}50%{box-shadow:0 0 20px 4px rgba(245,197,24,0.15)}}
+#splash.exit{animation:splashExit 1s cubic-bezier(0.4,0,0.2,1) forwards;}
+@keyframes splashExit{to{opacity:0;transform:scale(1.03)}}
+#main-app{display:none;background:#f8f7f4;min-height:100vh;}
+#main-app.show{display:block;}
+.app-header{background:#04080f;padding:0;overflow:hidden;position:relative;height:72px;}
+.app-header-sky{position:absolute;inset:0;background:linear-gradient(135deg,#04080f 0%,#0a1628 50%,#04080f 100%);}
+.header-silhouette{position:absolute;bottom:0;left:0;right:0;height:40px;opacity:0.3;overflow:hidden;}
+#header-plane{position:absolute;top:14px;z-index:5;animation:headerPlane 12s linear infinite;}
+@keyframes headerPlane{from{left:-100px}to{left:calc(100% + 100px)}}
+.app-header-content{position:relative;z-index:6;display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 1.4rem;}
+.app-brand-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#fff;letter-spacing:0.04em;}
+.app-brand-name em{font-style:italic;color:#f5c518;}
+.app-brand-tag{font-size:7px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.35);display:block;margin-top:-2px;font-weight:500;}
+.header-dots{display:flex;gap:6px;align-items:center;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,215,100,0.4);}
+.dot.active{background:#f5c518;}
+.ticker-wrap{background:#0a0f1a;border-bottom:1px solid rgba(255,215,100,0.1);overflow:hidden;white-space:nowrap;padding:7px 0;}
+.ticker-inner{display:inline-block;font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,215,100,0.55);font-weight:500;animation:tickMove 28s linear infinite;}
+@keyframes tickMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.screen{display:none}.screen.active{display:block}
+.app-body{max-width:540px;margin:0 auto;padding:0 1.2rem 5rem;}
+.ptitle{margin:1.75rem 0 1.25rem;}
+.eyebrow{font-size:9px;letter-spacing:0.38em;text-transform:uppercase;font-weight:600;color:#c8922a;margin-bottom:8px;display:block;}
+.ptitle h1{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,7vw,42px);line-height:1.1;color:#04080f;font-weight:400;}
+.ptitle h1 em{font-style:italic;color:#1a5fa8;}
+.ptitle p{font-size:12px;font-weight:300;color:#7a8a9a;margin-top:8px;line-height:1.7;letter-spacing:0.02em;}
+.card{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:3px;padding:1.4rem;margin-bottom:1rem;box-shadow:0 2px 20px rgba(0,0,0,0.06);position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1a5fa8,#c8922a,#1a5fa8);}
+.card-plain{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:3px;padding:1.4rem;margin-bottom:1rem;box-shadow:0 2px 16px rgba(0,0,0,0.05);}
+.clabel{font-size:9px;letter-spacing:0.32em;text-transform:uppercase;font-weight:600;color:#1a5fa8;margin-bottom:1.1rem;}
+.field{margin-bottom:.9rem;}
+.field label{display:block;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;font-weight:600;color:#9aabba;margin-bottom:6px;}
+input[type=text],input[type=number]{width:100%;padding:11px 14px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:400;border:1.5px solid #e0e8f0;border-radius:3px;background:#fafcff;color:#04080f;outline:none;transition:all 0.2s;letter-spacing:0.02em;}
+input:focus{border-color:#1a5fa8;box-shadow:0 0 0 3px rgba(26,95,168,0.08);background:#fff;}
+.irow{display:flex;gap:8px;}
+.irow input{flex:1;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;border:1.5px solid #1a5fa8;border-radius:2px;background:transparent;color:#1a5fa8;cursor:pointer;transition:all 0.25s;}
+.btn:hover{background:#1a5fa8;color:#fff;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,95,168,0.25);}
+.btn-primary{background:#1a5fa8;color:#fff;}
+.btn-primary:hover{background:#1258a0;border-color:#1258a0;}
+.btn-cta{width:100%;padding:15px;background:#04080f;color:#fff;border:1px solid rgba(255,215,100,0.3);border-radius:2px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.btn-cta:hover{background:#0a1628;border-color:rgba(255,215,100,0.7);box-shadow:0 4px 24px rgba(0,0,0,0.3);transform:translateY(-1px);}
+.btn-ghost{background:transparent;border:none;color:#9aabba;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;padding:6px 0;margin-bottom:1.1rem;display:inline-flex;align-items:center;gap:6px;}
+.btn-ghost:hover{color:#1a5fa8;}
+.btn-sm{padding:5px 12px;font-size:9px;letter-spacing:0.15em;border-color:rgba(200,80,40,0.3);color:#c85028;border-radius:2px;}
+.btn-sm:hover{background:rgba(200,80,40,0.06);color:#c85028;border-color:#c85028;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:5px 10px 5px 6px;background:#f4f7fc;border:1px solid #d0e0f0;border-radius:2px;font-size:11px;font-weight:500;color:#04080f;letter-spacing:0.03em;}
+.avatar{width:24px;height:24px;border-radius:50%;background:#1a5fa8;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;letter-spacing:0;}
+.avatar-md{width:36px;height:36px;font-size:13px;}
+.chip-del{cursor:pointer;color:#c0d0e0;background:none;border:none;font-size:16px;line-height:1;padding:0;transition:color 0.15s;}
+.chip-del:hover{color:#c85028;}
+.tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tile{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:3px;padding:1.3rem 1.1rem;cursor:pointer;position:relative;overflow:hidden;transition:all 0.25s;}
+.tile::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1a5fa8,#c8922a);transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.tile:hover{box-shadow:0 6px 24px rgba(0,0,0,0.1);transform:translateY(-2px);border-color:rgba(26,95,168,0.2);}
+.tile:hover::after{transform:scaleX(1);}
+.tile-num{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:rgba(26,95,168,0.12);line-height:1;margin-bottom:10px;}
+.tile-title{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#04080f;}
+.tile-sub{font-size:11px;font-weight:300;color:#9aabba;margin-top:3px;}
+.exp-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f3f8;}
+.exp-row:last-child{border-bottom:none;}
+.exp-name{font-size:13px;font-weight:500;color:#04080f;letter-spacing:0.02em;}
+.exp-by{font-size:10px;font-weight:400;color:#9aabba;margin-top:2px;letter-spacing:0.04em;}
+.exp-amt{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#1a5fa8;margin-right:12px;}
+.met-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
+.met{background:#04080f;color:#fff;border-radius:2px;padding:16px 12px;position:relative;overflow:hidden;}
+.met::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(245,197,24,0.08),transparent 60%);}
+.met .ml{font-size:8px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,215,100,0.5);margin-bottom:6px;}
+.met .mv{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:#fff;}
+.popt{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1.5px solid #e0e8f0;border-radius:3px;margin-bottom:7px;cursor:pointer;transition:all 0.2s;background:#fafcff;font-size:13px;font-weight:500;}
+.popt:hover{border-color:#1a5fa8;}
+.popt.selected{border-color:#1a5fa8;background:#f0f6ff;}
+.brow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f3f8;}
+.brow:last-child{border-bottom:none;}
+.badge{font-size:10px;font-weight:600;letter-spacing:0.1em;padding:4px 12px;border-radius:2px;}
+.bg-get{background:rgba(26,143,107,0.1);color:#1a8f6b;}
+.bg-pay{background:rgba(200,80,40,0.1);color:#c85028;}
+.bg-ok{background:#f4f7fc;color:#9aabba;}
+.txn{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#f8fafc;border-radius:2px;margin-bottom:7px;font-size:12px;font-weight:500;border-left:3px solid #1a5fa8;}
+.txn-amt{font-family:'Cormorant Garamond',serif;font-size:18px;color:#1a5fa8;margin:0 6px;}
+.txn-arr{color:#c8922a;font-size:16px;}
+.contrib{margin-bottom:14px;}
+.ctop{display:flex;justify-content:space-between;align-items:center;}
+.cval{font-family:'Cormorant Garamond',serif;font-size:17px;color:#1a5fa8;}
+.bwrap{background:#eef2f8;border-radius:1px;height:4px;margin-top:6px;overflow:hidden;}
+.bfill{height:100%;background:linear-gradient(90deg,#1a5fa8,#c8922a);transition:width 0.9s ease;}
+.err{font-size:10px;color:#c85028;font-weight:600;letter-spacing:0.06em;margin-top:5px;display:none;}
+.empty{text-align:center;padding:2.5rem 0;color:#9aabba;font-size:12px;letter-spacing:0.06em;}
+.empty .big{font-size:36px;margin-bottom:10px;display:block;opacity:0.5;}
+.divider{display:flex;align-items:center;gap:12px;margin:1.2rem 0;font-size:8px;letter-spacing:0.32em;text-transform:uppercase;color:#c0ccd8;font-weight:600;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#eef2f8;}
+.footer-stripe{position:fixed;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#04080f,#1a5fa8,#c8922a,#1a5fa8,#04080f);z-index:100;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.screen.active>*{animation:fadeUp 0.38s ease both;}
+.screen.active>*:nth-child(2){animation-delay:.07s}
+.screen.active>*:nth-child(3){animation-delay:.12s}
+.screen.active>*:nth-child(4){animation-delay:.17s}
+</style>
+</head>
+<body>
+<div id="splash">
+  <div id="aurora"></div>
+  <div id="starfield"></div>
+  <div id="horizon"></div>
+  <div id="moon"></div>
+  <div class="shoot sh1"></div>
+  <div class="shoot sh2"></div>
+  <div class="shoot sh3"></div>
+  <div id="contrail">
+    <div class="contrail-line cl-1"></div>
+    <div class="contrail-line cl-2"></div>
+  </div>
+  <div id="airplane">
+    <svg width="200" height="80" viewBox="0 0 200 80" fill="none">
+      <ellipse cx="100" cy="38" rx="88" ry="18" fill="#e8eef8"/>
+      <path d="M188 38 Q210 38 188 30 L155 33Z" fill="#d0d8ec"/>
+      <path d="M14 38 L30 26 L26 38Z" fill="#c8d4e8"/>
+      <path d="M38 34 L50 12 L62 34Z" fill="#d8e2f0" stroke="#c8d4e8" stroke-width="0.5"/>
+      <ellipse cx="162" cy="36" rx="5" ry="3.5" fill="#9ec8f0" opacity="0.85"/>
+      <ellipse cx="147" cy="36" rx="5" ry="3.5" fill="#9ec8f0" opacity="0.85"/>
+      <ellipse cx="132" cy="36" rx="5" ry="3.5" fill="#9ec8f0" opacity="0.85"/>
+      <ellipse cx="117" cy="36" rx="5" ry="3.5" fill="#9ec8f0" opacity="0.85"/>
+      <ellipse cx="102" cy="36" rx="5" ry="3.5" fill="#9ec8f0" opacity="0.85"/>
+      <ellipse cx="87"  cy="36" rx="5" ry="3.5" fill="#9ec8f0" opacity="0.7"/>
+      <path d="M88 40 L120 70 L130 40Z" fill="#d0dcea" stroke="#c0cce0" stroke-width="0.5"/>
+      <path d="M22 40 L34 55 L42 40Z" fill="#d0dcea"/>
+      <ellipse cx="100" cy="44" rx="88" ry="5" fill="#1a5fa8" opacity="0.18"/>
+      <ellipse cx="108" cy="56" rx="11" ry="5.5" fill="#b8c8e0"/>
+      <ellipse cx="108" cy="54" rx="7" ry="3" fill="#8aa0c0"/>
+      <circle cx="178" cy="38" r="2.5" fill="#fff" opacity="0.9"/>
+      <circle cx="22" cy="38" r="2" fill="#f00" opacity="0.8"/>
+    </svg>
+  </div>
+  <div id="wonders-wrap">
+    <div id="wonders-track">
+      <div class="wonder-scene">
+        <svg width="220" height="160" viewBox="0 0 220 160">
+          <polygon points="0,160 40,60 80,160" fill="#1a2a1a"/>
+          <polygon points="30,160 80,50 130,160" fill="#223022"/>
+          <polygon points="90,160 150,40 210,160" fill="#1a2a1a"/>
+          <polygon points="150,160 200,70 220,160" fill="#223022"/>
+          <path d="M0,110 Q30,70 55,90 Q80,110 100,80 Q130,50 155,75 Q175,90 200,70 L200,85 Q175,105 155,90 Q130,65 100,95 Q80,125 55,105 Q30,85 0,125Z" fill="#8b7355"/>
+          <rect x="0" y="108" width="8" height="8" fill="#9a8264"/><rect x="12" y="104" width="8" height="8" fill="#9a8264"/><rect x="24" y="101" width="8" height="8" fill="#9a8264"/><rect x="36" y="98" width="8" height="8" fill="#9a8264"/><rect x="60" y="106" width="8" height="8" fill="#9a8264"/><rect x="84" y="108" width="8" height="8" fill="#9a8264"/><rect x="100" y="93" width="8" height="8" fill="#9a8264"/><rect x="130" y="84" width="8" height="8" fill="#9a8264"/><rect x="162" y="88" width="8" height="8" fill="#9a8264"/><rect x="195" y="76" width="8" height="8" fill="#9a8264"/>
+          <rect x="98" y="70" width="22" height="28" fill="#a08870"/><rect x="94" y="66" width="30" height="8" fill="#b09880"/><rect x="96" y="58" width="6" height="10" fill="#9a8264"/><rect x="106" y="58" width="6" height="10" fill="#9a8264"/><rect x="116" y="58" width="6" height="10" fill="#9a8264"/>
+          <rect x="0" y="140" width="220" height="20" fill="#04080f" opacity="0.6"/>
+        </svg>
+        <span class="wonder-label">Great Wall of China</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="210" height="160" viewBox="0 0 210 160">
+          <polygon points="0,160 0,30 45,15 60,160" fill="#6b3a20"/><polygon points="0,160 0,60 30,40 50,160" fill="#7a4428"/>
+          <polygon points="210,160 210,30 165,15 150,160" fill="#6b3a20"/><polygon points="210,160 210,60 180,40 160,160" fill="#7a4428"/>
+          <rect x="60" y="60" width="12" height="90" fill="#c8845a"/><rect x="78" y="60" width="12" height="90" fill="#c8845a"/><rect x="96" y="55" width="12" height="95" fill="#d89068"/><rect x="114" y="55" width="12" height="95" fill="#d89068"/><rect x="132" y="60" width="12" height="90" fill="#c8845a"/><rect x="150" y="60" width="12" height="90" fill="#c8845a"/>
+          <polygon points="55,62 155,62 155,40 105,20 55,40Z" fill="#e09878"/>
+          <ellipse cx="105" cy="22" rx="22" ry="12" fill="#d08060"/>
+          <rect x="96" y="10" width="18" height="14" rx="9" fill="#c07050"/>
+          <rect x="55" y="60" width="100" height="8" fill="#d08868"/>
+          <rect x="92" y="110" width="24" height="40" fill="#3a1a0a"/>
+          <path d="M92,110 Q104,100 116,110" fill="#2a1005"/>
+          <rect x="65" y="80" width="14" height="22" rx="7" fill="#b87050"/><rect x="130" y="80" width="14" height="22" rx="7" fill="#b87050"/>
+          <rect x="0" y="145" width="210" height="15" fill="#04080f" opacity="0.5"/>
+        </svg>
+        <span class="wonder-label">Petra, Jordan</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="170" height="170" viewBox="0 0 170 170">
+          <polygon points="0,170 50,80 85,50 120,80 170,170" fill="#1a2a1a"/><polygon points="40,170 70,90 85,60 100,90 130,170" fill="#223022"/>
+          <ellipse cx="85" cy="55" rx="40" ry="12" fill="rgba(255,255,255,0.06)"/>
+          <rect x="73" y="115" width="24" height="30" fill="#d0c8b8"/><rect x="70" y="112" width="30" height="6" fill="#e0d8c8"/>
+          <path d="M80,115 Q85,78 90,115Z" fill="#e8e0d0"/><rect x="79" y="78" width="12" height="8" fill="#e0d8c8"/>
+          <ellipse cx="85" cy="74" rx="7" ry="8" fill="#e8e0d0"/>
+          <rect x="28" y="84" width="57" height="7" rx="3.5" fill="#e8e0d0"/><rect x="85" y="84" width="57" height="7" rx="3.5" fill="#e8e0d0"/>
+          <ellipse cx="28" cy="87" rx="5" ry="4" fill="#e0d8c8"/><ellipse cx="142" cy="87" rx="5" ry="4" fill="#e0d8c8"/>
+          <rect x="0" y="155" width="170" height="15" fill="#04080f" opacity="0.55"/>
+        </svg>
+        <span class="wonder-label">Christ the Redeemer</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="230" height="160" viewBox="0 0 230 160">
+          <polygon points="0,160 60,30 120,160" fill="#1a2a1a"/><polygon points="80,160 150,10 210,160" fill="#223022"/><polygon points="160,160 210,50 230,160" fill="#1a2a1a"/>
+          <path d="M20,130 L80,100 L90,108 L30,138Z" fill="#6b7a5a"/><path d="M30,140 L90,108 L100,118 L40,150Z" fill="#5a6a4a"/>
+          <path d="M80,100 L150,70 L158,78 L90,108Z" fill="#7a8a68"/><path d="M90,108 L158,78 L166,88 L100,118Z" fill="#6b7a58"/>
+          <rect x="85" y="86" width="18" height="16" fill="#c8b890"/><polygon points="85,86 103,86 94,78" fill="#b8a880"/>
+          <rect x="108" y="76" width="16" height="14" fill="#c8b890"/><polygon points="108,76 124,76 116,68" fill="#b8a880"/>
+          <rect x="128" y="66" width="14" height="12" fill="#c8b890"/><polygon points="128,66 142,66 135,58" fill="#b8a880"/>
+          <rect x="0" y="148" width="230" height="12" fill="#04080f" opacity="0.5"/>
+        </svg>
+        <span class="wonder-label">Machu Picchu</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="20" y="130" width="160" height="20" fill="#c8a870"/>
+          <polygon points="20,130 180,130 170,115 30,115" fill="#d4b47c"/><polygon points="30,115 170,115 160,100 40,100" fill="#c8a870"/><polygon points="40,100 160,100 150,85 50,85" fill="#d4b47c"/><polygon points="50,85 150,85 140,70 60,70" fill="#c8a870"/><polygon points="60,70 140,70 130,55 70,55" fill="#d4b47c"/><polygon points="70,55 130,55 120,40 80,40" fill="#c8a870"/><polygon points="80,40 120,40 110,28 90,28" fill="#d4b47c"/>
+          <rect x="82" y="14" width="36" height="16" fill="#c8a060"/><polygon points="82,14 118,14 100,5" fill="#b89050"/>
+          <rect x="94" y="20" width="12" height="10" fill="#3a2a10"/>
+          <rect x="97" y="28" width="6" height="102" fill="rgba(0,0,0,0.2)"/>
+          <ellipse cx="30" cy="132" rx="12" ry="8" fill="#b89050"/><ellipse cx="170" cy="132" rx="12" ry="8" fill="#b89050"/>
+          <rect x="0" y="148" width="200" height="12" fill="#04080f" opacity="0.5"/>
+        </svg>
+        <span class="wonder-label">Chichén Itzá</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="230" height="160" viewBox="0 0 230 160">
+          <ellipse cx="115" cy="115" rx="110" ry="55" fill="#8b7355" stroke="#7a6244" stroke-width="1"/>
+          <ellipse cx="115" cy="108" rx="90" ry="42" fill="#5a3c20"/>
+          <g fill="#7a6244">
+            <rect x="12" y="88" width="10" height="28" rx="1"/><rect x="28" y="85" width="10" height="31" rx="1"/><rect x="44" y="82" width="10" height="33" rx="1"/><rect x="60" y="80" width="10" height="35" rx="1"/><rect x="76" y="78" width="10" height="37" rx="1"/><rect x="92" y="77" width="10" height="38" rx="1"/><rect x="108" y="77" width="10" height="38" rx="1"/><rect x="124" y="77" width="10" height="38" rx="1"/><rect x="140" y="78" width="10" height="37" rx="1"/><rect x="156" y="80" width="10" height="35" rx="1"/><rect x="172" y="82" width="10" height="33" rx="1"/><rect x="188" y="85" width="10" height="31" rx="1"/><rect x="204" y="88" width="10" height="28" rx="1"/>
+          </g>
+          <path d="M5,90 Q115,50 225,90" stroke="#a09070" stroke-width="4" fill="none"/>
+          <ellipse cx="115" cy="158" rx="110" ry="8" fill="rgba(0,0,0,0.4)"/>
+          <rect x="0" y="148" width="230" height="12" fill="#04080f" opacity="0.45"/>
+        </svg>
+        <span class="wonder-label">Colosseum, Rome</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <!-- REPEAT for seamless loop -->
+      <div class="wonder-scene">
+        <svg width="220" height="160" viewBox="0 0 220 160">
+          <polygon points="0,160 40,60 80,160" fill="#1a2a1a"/><polygon points="30,160 80,50 130,160" fill="#223022"/><polygon points="90,160 150,40 210,160" fill="#1a2a1a"/><polygon points="150,160 200,70 220,160" fill="#223022"/>
+          <path d="M0,110 Q30,70 55,90 Q80,110 100,80 Q130,50 155,75 Q175,90 200,70 L200,85 Q175,105 155,90 Q130,65 100,95 Q80,125 55,105 Q30,85 0,125Z" fill="#8b7355"/>
+          <rect x="98" y="70" width="22" height="28" fill="#a08870"/><rect x="94" y="66" width="30" height="8" fill="#b09880"/>
+          <rect x="0" y="140" width="220" height="20" fill="#04080f" opacity="0.6"/>
+        </svg>
+        <span class="wonder-label">Great Wall of China</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="210" height="160" viewBox="0 0 210 160">
+          <polygon points="0,160 0,30 45,15 60,160" fill="#6b3a20"/><polygon points="210,160 210,30 165,15 150,160" fill="#6b3a20"/>
+          <rect x="60" y="60" width="12" height="90" fill="#c8845a"/><rect x="78" y="60" width="12" height="90" fill="#c8845a"/><rect x="96" y="55" width="12" height="95" fill="#d89068"/><rect x="114" y="55" width="12" height="95" fill="#d89068"/><rect x="132" y="60" width="12" height="90" fill="#c8845a"/><rect x="150" y="60" width="12" height="90" fill="#c8845a"/>
+          <polygon points="55,62 155,62 155,40 105,20 55,40Z" fill="#e09878"/>
+          <rect x="92" y="110" width="24" height="40" fill="#3a1a0a"/>
+          <rect x="0" y="145" width="210" height="15" fill="#04080f" opacity="0.5"/>
+        </svg>
+        <span class="wonder-label">Petra, Jordan</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="170" height="170" viewBox="0 0 170 170">
+          <polygon points="0,170 50,80 85,50 120,80 170,170" fill="#1a2a1a"/><polygon points="40,170 70,90 85,60 100,90 130,170" fill="#223022"/>
+          <rect x="73" y="115" width="24" height="30" fill="#d0c8b8"/>
+          <path d="M80,115 Q85,78 90,115Z" fill="#e8e0d0"/><rect x="79" y="78" width="12" height="8" fill="#e0d8c8"/>
+          <ellipse cx="85" cy="74" rx="7" ry="8" fill="#e8e0d0"/>
+          <rect x="28" y="84" width="57" height="7" rx="3.5" fill="#e8e0d0"/><rect x="85" y="84" width="57" height="7" rx="3.5" fill="#e8e0d0"/>
+          <rect x="0" y="155" width="170" height="15" fill="#04080f" opacity="0.55"/>
+        </svg>
+        <span class="wonder-label">Christ the Redeemer</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <polygon points="0,160 60,30 120,160" fill="#1a2a1a"/><polygon points="80,160 150,10 200,160" fill="#223022"/>
+          <path d="M20,130 L80,100 L90,108 L30,138Z" fill="#6b7a5a"/>
+          <path d="M80,100 L150,70 L158,78 L90,108Z" fill="#7a8a68"/>
+          <rect x="85" y="86" width="18" height="16" fill="#c8b890"/><polygon points="85,86 103,86 94,78" fill="#b8a880"/>
+          <rect x="0" y="148" width="200" height="12" fill="#04080f" opacity="0.5"/>
+        </svg>
+        <span class="wonder-label">Machu Picchu</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="20" y="130" width="160" height="20" fill="#c8a870"/>
+          <polygon points="20,130 180,130 170,115 30,115" fill="#d4b47c"/><polygon points="30,115 170,115 160,100 40,100" fill="#c8a870"/><polygon points="40,100 160,100 150,85 50,85" fill="#d4b47c"/><polygon points="50,85 150,85 140,70 60,70" fill="#c8a870"/><polygon points="60,70 140,70 130,55 70,55" fill="#d4b47c"/>
+          <rect x="82" y="14" width="36" height="16" fill="#c8a060"/><polygon points="82,14 118,14 100,5" fill="#b89050"/>
+          <rect x="94" y="20" width="12" height="10" fill="#3a2a10"/>
+          <rect x="0" y="148" width="200" height="12" fill="#04080f" opacity="0.5"/>
+        </svg>
+        <span class="wonder-label">Chichén Itzá</span>
+      </div>
+      <div class="wonder-scene" style="padding:0 20px;align-items:center;height:120px;"><svg width="30" height="60" viewBox="0 0 30 60"><circle cx="15" cy="10" r="1.5" fill="rgba(255,215,100,0.4)"/><circle cx="15" cy="30" r="1" fill="rgba(255,215,100,0.3)"/><circle cx="15" cy="50" r="1.5" fill="rgba(255,215,100,0.4)"/></svg></div>
+      <div class="wonder-scene">
+        <svg width="230" height="160" viewBox="0 0 230 160">
+          <ellipse cx="115" cy="115" rx="110" ry="55" fill="#8b7355"/>
+          <ellipse cx="115" cy="108" rx="90" ry="42" fill="#5a3c20"/>
+          <g fill="#7a6244"><rect x="12" y="88" width="10" height="28" rx="1"/><rect x="44" y="82" width="10" height="33" rx="1"/><rect x="76" y="78" width="10" height="37" rx="1"/><rect x="108" y="77" width="10" height="38" rx="1"/><rect x="140" y="78" width="10" height="37" rx="1"/><rect x="172" y="82" width="10" height="33" rx="1"/><rect x="204" y="88" width="10" height="28" rx="1"/></g>
+          <path d="M5,90 Q115,50 225,90" stroke="#a09070" stroke-width="4" fill="none"/>
+          <rect x="0" y="148" width="230" height="12" fill="#04080f" opacity="0.45"/>
+        </svg>
+        <span class="wonder-label">Colosseum, Rome</span>
+      </div>
+    </div>
+    <div id="ground"></div>
+    <div id="fog"></div>
+  </div>
+  <div id="title-overlay">
+    <span class="t-eyebrow">Est. 2025 — Explore the World</span>
+    <div class="t-main">OUR<br><em>TRIP</em><br>MANAGER</div>
+    <span class="t-sub">Seven Wonders · One Journey</span>
+    <div class="t-line"></div>
+  </div>
+  <button id="enter-btn" onclick="enterApp()">Enter &nbsp;→</button>
+</div>
+
+<div id="main-app">
+  <div class="app-header">
+    <div class="app-header-sky"></div>
+    <div class="header-silhouette">
+      <svg width="100%" height="40" viewBox="0 0 600 40" preserveAspectRatio="xMidYMax meet">
+        <polygon points="0,40 30,15 60,40" fill="rgba(255,255,255,0.08)"/>
+        <polygon points="40,40 80,8 120,40" fill="rgba(255,255,255,0.06)"/>
+        <path d="M150,40 Q200,10 250,40" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="rgba(255,255,255,0.04)"/>
+        <polygon points="290,40 295,10 300,40" fill="rgba(255,255,255,0.08)"/>
+        <rect x="283" y="16" width="24" height="3" fill="rgba(255,255,255,0.08)" rx="1"/>
+        <polygon points="340,40 380,10 420,40" fill="rgba(255,255,255,0.06)"/>
+        <polygon points="350,40 380,18 410,40" fill="rgba(255,255,255,0.08)"/>
+        <polygon points="440,40 445,5 460,20 470,40" fill="rgba(255,255,255,0.06)"/>
+        <polygon points="520,40 535,5 550,20 560,40" fill="rgba(255,255,255,0.06)"/>
+        <polygon points="570,40 590,12 610,40" fill="rgba(255,255,255,0.08)"/>
+      </svg>
+    </div>
+    <div id="header-plane">
+      <svg width="60" height="24" viewBox="0 0 60 24" fill="none">
+        <ellipse cx="30" cy="12" rx="26" ry="6" fill="rgba(255,255,255,0.85)"/>
+        <path d="M56 12 Q64 12 56 9 L44 10.5Z" fill="rgba(255,255,255,0.6)"/>
+        <path d="M4 12 L10 8 L8 12Z" fill="rgba(255,255,255,0.5)"/>
+        <ellipse cx="36" cy="11" rx="3" ry="2" fill="rgba(158,200,240,0.7)"/>
+        <ellipse cx="28" cy="11" rx="3" ry="2" fill="rgba(158,200,240,0.7)"/>
+        <path d="M26 12 L34 20 L37 12Z" fill="rgba(200,220,240,0.5)"/>
+      </svg>
+    </div>
+    <div class="app-header-content">
+      <div>
+        <div class="app-brand-name">Our <em>Trip</em> Manager</div>
+        <span class="app-brand-tag">✦ Track · Split · Explore ✦</span>
+      </div>
+      <div class="header-dots">
+        <div class="dot"></div><div class="dot active"></div><div class="dot"></div>
+      </div>
+    </div>
+  </div>
+  <div class="ticker-wrap">
+    <span class="ticker-inner">✦ Great Wall, China &nbsp;·&nbsp; Petra, Jordan &nbsp;·&nbsp; Christ the Redeemer &nbsp;·&nbsp; Machu Picchu &nbsp;·&nbsp; Chichén Itzá &nbsp;·&nbsp; Colosseum, Rome &nbsp;·&nbsp; ✦ Great Wall, China &nbsp;·&nbsp; Petra, Jordan &nbsp;·&nbsp; Christ the Redeemer &nbsp;·&nbsp; Machu Picchu &nbsp;·&nbsp; Chichén Itzá &nbsp;·&nbsp; Colosseum, Rome &nbsp;·&nbsp;</span>
+  </div>
+  <div class="app-body">
+    <div id="screen-setup" class="screen active">
+      <div class="ptitle">
+        <span class="eyebrow">✦ New Journey</span>
+        <h1>Who's joining<br>the <em>adventure?</em></h1>
+        <p>Add your travel companions below. We'll handle every bill, every split — perfectly.</p>
+      </div>
+      <div class="card">
+        <div class="clabel">Travellers</div>
+        <div class="irow">
+          <input type="text" id="friend-input" placeholder="Enter name" maxlength="30"/>
+          <button class="btn btn-primary" onclick="addFriend()">Add</button>
+        </div>
+        <div class="err" id="friend-err">Please enter a name</div>
+        <div class="chips" id="friends-list"></div>
+      </div>
+      <button class="btn-cta" onclick="goHome()">Begin the Journey →</button>
+      <div class="err" id="start-err" style="display:none;text-align:center;margin-top:10px;">Please add at least 2 travellers to continue.</div>
+    </div>
+    <div id="screen-home" class="screen">
+      <div class="ptitle">
+        <span class="eyebrow">✦ Dashboard</span>
+        <h1>Your <em>trip</em><br>command centre</h1>
+        <p id="home-sub" style="font-size:11px;letter-spacing:0.06em;font-weight:500;"></p>
+      </div>
+      <div class="tile-grid">
+        <div class="tile" onclick="showScreen('screen-add')"><div class="tile-num">01</div><div class="tile-title">Add Expense</div><div class="tile-sub">Log a payment</div></div>
+        <div class="tile" onclick="showScreen('screen-expenses')"><div class="tile-num">02</div><div class="tile-title">All Expenses</div><div class="tile-sub" id="exp-count-lbl">None recorded</div></div>
+        <div class="tile" onclick="showSummary()"><div class="tile-num">03</div><div class="tile-title">Trip Summary</div><div class="tile-sub">Totals & shares</div></div>
+        <div class="tile" onclick="showSettlement()"><div class="tile-num">04</div><div class="tile-title">Settle Up</div><div class="tile-sub">Final transactions</div></div>
+      </div>
+      <div class="divider">or</div>
+      <button class="btn" style="width:100%;font-size:10px;color:#9aabba;border-color:#e0e8f0;" onclick="resetAll()">↺ &nbsp; Reset & Start New Trip</button>
+    </div>
+    <div id="screen-add" class="screen">
+      <button class="btn-ghost" onclick="showScreen('screen-home')">← Back</button>
+      <div class="ptitle"><span class="eyebrow">✦ Record</span><h1>New <em>expense</em></h1></div>
+      <div class="card">
+        <div class="clabel">Expense Details</div>
+        <div class="field"><label>What was it?</label><input type="text" id="exp-name" placeholder="e.g. Hotel, Dinner, Train ticket, Taxi…"/></div>
+        <div class="field"><label>Amount (₹)</label><input type="number" id="exp-amount" placeholder="0.00" min="0" step="0.01"/></div>
+      </div>
+      <div class="card">
+        <div class="clabel">Who Paid?</div>
+        <div id="payer-list"></div>
+        <div class="err" id="add-err"></div>
+      </div>
+      <button class="btn-cta" onclick="addExpense()">Add Expense →</button>
+    </div>
+    <div id="screen-expenses" class="screen">
+      <button class="btn-ghost" onclick="showScreen('screen-home')">← Back</button>
+      <div class="ptitle"><span class="eyebrow">✦ Logbook</span><h1>All <em>expenses</em></h1></div>
+      <div class="card-plain"><div id="exp-list"></div></div>
+    </div>
+    <div id="screen-summary" class="screen">
+      <button class="btn-ghost" onclick="showScreen('screen-home')">← Back</button>
+      <div class="ptitle"><span class="eyebrow">✦ Overview</span><h1>Trip <em>summary</em></h1></div>
+      <div class="met-grid" id="summary-metrics"></div>
+      <div class="card-plain"><div class="clabel">Contributions</div><div id="summary-contribs"></div></div>
+    </div>
+    <div id="screen-settle" class="screen">
+      <button class="btn-ghost" onclick="showScreen('screen-home')">← Back</button>
+      <div class="ptitle"><span class="eyebrow">✦ Final Settlement</span><h1>Settle <em>up</em></h1></div>
+      <div class="card-plain"><div class="clabel">Balances</div><div id="settle-balances"></div></div>
+      <div class="card-plain"><div class="clabel">Transactions</div><div id="settle-txns"></div></div>
+    </div>
+  </div>
+</div>
+<div class="footer-stripe"></div>
+<script>
+const sf=document.getElementById('starfield');
+for(let i=0;i<120;i++){const s=document.createElement('div');s.className='s';const sz=Math.random()*2+0.5;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*60}%;animation-delay:${Math.random()*4}s;animation-duration:${1.5+Math.random()*3}s;opacity:${0.3+Math.random()*0.7}`;sf.appendChild(s);}
+function enterApp(){document.getElementById('splash').classList.add('exit');setTimeout(()=>{document.getElementById('splash').style.display='none';document.getElementById('main-app').classList.add('show');},1000);}
+let friends=[],expenses=[],selectedPayer=null;
+document.getElementById('friend-input').addEventListener('keydown',e=>{if(e.key==='Enter')addFriend();});
+function addFriend(){const inp=document.getElementById('friend-input');const name=inp.value.trim();const err=document.getElementById('friend-err');if(!name){err.textContent='Please enter a name';err.style.display='block';return;}if(friends.map(f=>f.toLowerCase()).includes(name.toLowerCase())){err.textContent='This name is already added';err.style.display='block';return;}err.style.display='none';friends.push(name);inp.value='';inp.focus();renderChips();}
+function removeFriend(n){friends=friends.filter(f=>f!==n);renderChips();}
+function renderChips(){document.getElementById('friends-list').innerHTML=friends.map(f=>`<span class="chip"><span class="avatar">${f[0].toUpperCase()}</span>${f}<button class="chip-del" onclick="removeFriend('${f.replace(/'/g,"\\'")}')">×</button></span>`).join('');}
+function goHome(){const err=document.getElementById('start-err');if(friends.length<2){err.style.display='block';return;}err.style.display='none';document.getElementById('home-sub').textContent='Travelling: '+friends.join(' · ');updateExpCount();showScreen('screen-home');}
+function updateExpCount(){document.getElementById('exp-count-lbl').textContent=expenses.length===0?'None recorded':`${expenses.length} expense${expenses.length>1?'s':''} logged`;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='screen-add')renderPayerOpts();if(id==='screen-expenses')renderExpList();}
+function renderPayerOpts(){selectedPayer=null;document.getElementById('payer-list').innerHTML=friends.map(f=>`<div class="popt" id="po-${CSS.escape(f)}" onclick="selectPayer('${f.replace(/'/g,"\\'")}')"><span class="avatar avatar-md">${f[0].toUpperCase()}</span><span style="font-size:13px;font-weight:500;">${f}</span></div>`).join('');}
+function selectPayer(name){selectedPayer=name;friends.forEach(f=>{const el=document.getElementById('po-'+CSS.escape(f));if(el)el.className='popt'+(f===name?' selected':'');});}
+function addExpense(){const name=document.getElementById('exp-name').value.trim();const amt=parseFloat(document.getElementById('exp-amount').value);const err=document.getElementById('add-err');if(!name){err.textContent='Please enter an expense name';err.style.display='block';return;}if(!amt||amt<=0){err.textContent='Please enter a valid amount';err.style.display='block';return;}if(!selectedPayer){err.textContent='Please select who paid';err.style.display='block';return;}err.style.display='none';expenses.push({item:name,amount:amt,paid_by:selectedPayer});document.getElementById('exp-name').value='';document.getElementById('exp-amount').value='';selectedPayer=null;updateExpCount();showScreen('screen-home');}
+function renderExpList(){const c=document.getElementById('exp-list');if(!expenses.length){c.innerHTML='<div class="empty"><span class="big">✦</span>No expenses recorded yet</div>';return;}c.innerHTML=expenses.map((e,i)=>`<div class="exp-row"><div><div class="exp-name">${e.item}</div><div class="exp-by">Paid by ${e.paid_by}</div></div><div style="display:flex;align-items:center;"><span class="exp-amt">₹${fmt(e.amount)}</span><button class="btn btn-sm" onclick="delExp(${i})">Remove</button></div></div>`).join('');}
+function delExp(i){expenses.splice(i,1);updateExpCount();renderExpList();}
+function fmt(n){return Math.abs(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function getBalances(){const total=expenses.reduce((s,e)=>s+e.amount,0);const share=total/friends.length;const paid={};friends.forEach(f=>paid[f]=0);expenses.forEach(e=>paid[e.paid_by]+=e.amount);const balance={};friends.forEach(f=>balance[f]=paid[f]-share);return{total,share,paid,balance};}
+function showSummary(){showScreen('screen-summary');if(!expenses.length){document.getElementById('summary-metrics').innerHTML='';document.getElementById('summary-contribs').innerHTML='<div class="empty"><span class="big">✦</span>No expenses recorded yet</div>';return;}const{total,share,paid}=getBalances();document.getElementById('summary-metrics').innerHTML=`<div class="met"><div class="ml">Total Spent</div><div class="mv">₹${fmt(total)}</div></div><div class="met"><div class="ml">Per Person</div><div class="mv">₹${fmt(share)}</div></div><div class="met"><div class="ml">Travellers</div><div class="mv">${friends.length}</div></div>`;document.getElementById('summary-contribs').innerHTML=friends.map(f=>{const pct=total>0?(paid[f]/total*100):0;return`<div class="contrib"><div class="ctop"><div style="display:flex;align-items:center;gap:9px;"><span class="avatar">${f[0].toUpperCase()}</span><span style="font-size:13px;font-weight:500;">${f}</span></div><span class="cval">₹${fmt(paid[f])}</span></div><div class="bwrap"><div class="bfill" style="width:${pct.toFixed(1)}%"></div></div></div>`;}).join('');}
+function showSettlement(){showScreen('screen-settle');if(!expenses.length){document.getElementById('settle-balances').innerHTML='<div class="empty"><span class="big">✦</span>No expenses recorded yet</div>';document.getElementById('settle-txns').innerHTML='';return;}const{balance}=getBalances();document.getElementById('settle-balances').innerHTML=friends.map(f=>{const b=balance[f];let badge,txt;if(b>0.005){badge='bg-get';txt=`gets back ₹${fmt(b)}`;}else if(b<-0.005){badge='bg-pay';txt=`owes ₹${fmt(b)}`;}else{badge='bg-ok';txt='settled up';}return`<div class="brow"><div style="display:flex;align-items:center;gap:9px;"><span class="avatar avatar-md">${f[0].toUpperCase()}</span><span style="font-size:13px;font-weight:500;">${f}</span></div><span class="badge ${badge}">${txt}</span></div>`;}).join('');const creds=friends.filter(f=>balance[f]>0.005).map(f=>[f,balance[f]]);const debts=friends.filter(f=>balance[f]<-0.005).map(f=>[f,Math.abs(balance[f])]);const txns=[];let i=0,j=0;while(i<debts.length&&j<creds.length){const p=Math.min(debts[i][1],creds[j][1]);if(p>0.005)txns.push({from:debts[i][0],to:creds[j][0],amt:p});debts[i][1]-=p;creds[j][1]-=p;if(debts[i][1]<0.005)i++;if(creds[j][1]<0.005)j++;}document.getElementById('settle-txns').innerHTML=!txns.length?'<div class="empty"><span class="big">✦</span>Everyone is settled. Safe travels!</div>':txns.map(t=>`<div class="txn"><span class="avatar">${t.from[0].toUpperCase()}</span><span style="flex:1;font-size:13px;">${t.from}</span><span class="txn-arr">→</span><span class="txn-amt">₹${fmt(t.amt)}</span><span class="txn-arr">→</span><span style="flex:1;text-align:right;font-size:13px;">${t.to}</span><span class="avatar">${t.to[0].toUpperCase()}</span></div>`).join('');}
+function resetAll(){if(!confirm('Reset all data and start a new trip?'))return;friends=[];expenses=[];selectedPayer=null;document.getElementById('friends-list').innerHTML='';document.getElementById('friend-input').value='';showScreen('screen-setup');}
+</script>
+</body>
+</html>
